@@ -140,7 +140,7 @@ public class MoveGizmo : MonoBehaviour
 
     private void ToggleHandleColliders(bool enabled)
     {
-        foreach (var collider in handleColliders)
+        foreach (Collider collider in handleColliders)
         {
             collider.enabled = enabled;
         }

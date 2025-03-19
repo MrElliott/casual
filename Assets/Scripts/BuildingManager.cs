@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -20,6 +21,15 @@ public class BuildingManager : MonoBehaviour
     private List<PlaceableStruct> placeables = new List<PlaceableStruct>();
     
     private PlaceableStruct activePlaceable;
+
+
+    public LayerMask collisionLayer; // Set this to specify which layers the raycast should check for collisions
+
+    public bool inBuildMode = false; 
+    [FormerlySerializedAs("buildingGhostPrefab")] [SerializeField]
+    private GameObject buildingGhost;
+    [SerializeField]
+    private PlaceableSO activeBuildable;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start(){
@@ -36,6 +46,9 @@ public class BuildingManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(inBuildMode)
+            UpdateGhostLocation();
+        
         if (Input.GetMouseButtonDown(0)){
             
             // Create a ray from the camera to the mouse position
@@ -43,15 +56,23 @@ public class BuildingManager : MonoBehaviour
             RaycastHit hit;
 
             // Perform a raycast and check if it hits a collider
-            if (Physics.Raycast(ray, out hit)){
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, collisionLayer)){
                 // Get the GameObject that was hit
                 GameObject clickedObject = hit.collider.gameObject;
 
-                // Set the active placeable
-                SetActivePlaceable(clickedObject);
+                if (inBuildMode)
+                {
+                    Transform t = Instantiate(activeBuildable.Prefab, hit.point, Quaternion.identity);
+                    t.SetParent(clickedObject.transform);
+                }
+                else
+                {
+                    // Set the active placeable
+                    SetActivePlaceable(clickedObject);
                 
-                // Perform your desired action with the clicked object
-                Debug.Log("Clicked on: " + clickedObject.name);
+                    // Perform your desired action with the clicked object
+                    Debug.Log("Clicked on: " + clickedObject.name);
+                }
             }
         }
 
@@ -80,6 +101,37 @@ public class BuildingManager : MonoBehaviour
         
         Debug.Log("Set Active Placeable: " + activePlaceable.transform.name);
     }
+    
+    private void UpdateGhostLocation()
+    {
+        if(!buildingGhost.activeSelf)
+            buildingGhost.SetActive(true);
+        
+        // Get the mouse position in screen space
+        Vector3 mousePosition = Input.mousePosition;
+
+        // Convert screen space to world space
+        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        
+        // Set the z-coordinate to the object's current z to avoid altering its depth in 3D
+        mousePosition.z = transform.position.z;
+
+        // Cast a ray from the camera to the mouse position
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        // Check if the ray hits anything
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, collisionLayer))
+        {
+            // Move the object to the hit point
+            buildingGhost.transform.position = hit.point;
+        }
+        else
+        {
+            // If no object is hit, move the object to the mouse position
+            buildingGhost.transform.position = mousePosition;
+        }
+    }
+    
 }
 
 public struct PlaceableStruct{
