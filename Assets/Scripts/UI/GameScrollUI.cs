@@ -4,9 +4,12 @@ using UnityEngine.UI;
 public class GameScrollUI : MonoBehaviour
 {
     [SerializeField] private Transform selectablePrefab;
-    private RectTransform _rectTransform;
+    
+    private RectTransform rectTransform;
     
     [SerializeField] private Transform scrollContentTransform;
+    
+    [SerializeField] private PlaceableSO placeableObject;
 
     [SerializeField] private float yPadding = 10f;
     private int objsToSpawn = 10;
@@ -14,7 +17,7 @@ public class GameScrollUI : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _rectTransform = selectablePrefab.GetComponent<RectTransform>();
+        rectTransform = selectablePrefab.GetComponent<RectTransform>();
 
         GenerateScrollUI();
     }
@@ -30,7 +33,8 @@ public class GameScrollUI : MonoBehaviour
         for (int i = 0; i < objsToSpawn; i++)
         {
             Transform c = Instantiate(selectablePrefab, scrollContentTransform);
-            c.localPosition = new Vector3(-(_rectTransform.rect.width/2), -(_rectTransform.rect.height * i) + (_rectTransform.rect.height + yPadding), 0);
+            c.GetComponent<DisplayObject>().SetDisplay(placeableObject);
+            //c.localPosition = new Vector3(-(rectTransform.rect.width/2), -(rectTransform.rect.height * i) + (rectTransform.rect.height + yPadding), 0);
         }
     }
 }
