@@ -14,18 +14,15 @@ public class GameScrollUI : MonoBehaviour
     [SerializeField] private float yPadding = 10f;
     private int objsToSpawn = 10;
     
+    BuildingManager buildingManager;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        buildingManager = FindObjectOfType<BuildingManager>();
         rectTransform = selectablePrefab.GetComponent<RectTransform>();
 
         GenerateScrollUI();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private void GenerateScrollUI()
@@ -34,6 +31,10 @@ public class GameScrollUI : MonoBehaviour
         {
             Transform c = Instantiate(selectablePrefab, scrollContentTransform);
             c.GetComponent<DisplayObject>().SetDisplay(placeableObject);
+            c.GetComponent<Button>().onClick.AddListener(() =>
+            {
+                buildingManager.SetPlaceable(placeableObject);
+            });
             //c.localPosition = new Vector3(-(rectTransform.rect.width/2), -(rectTransform.rect.height * i) + (rectTransform.rect.height + yPadding), 0);
         }
     }

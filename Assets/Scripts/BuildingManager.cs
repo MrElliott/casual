@@ -101,6 +101,18 @@ public class BuildingManager : MonoBehaviour
         
         Debug.Log("Set Active Placeable: " + activePlaceable.transform.name);
     }
+
+    public void SetPlaceable(PlaceableSO placeable)
+    {
+        if (placeable == null || activePlaceable.placeableSO == placeable)
+        {
+            inBuildMode = false;
+            return;
+        }
+
+        activePlaceable = new PlaceableStruct() { placeableSO = placeable };
+        inBuildMode = true;
+    }
     
     private void UpdateGhostLocation()
     {
