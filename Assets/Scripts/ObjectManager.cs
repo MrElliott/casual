@@ -1,3 +1,4 @@
+using ScriptableObjectS;
 using UnityEngine;
 
 public class ObjectManager : MonoBehaviour{

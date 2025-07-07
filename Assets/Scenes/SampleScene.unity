@@ -654,7 +654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectablePrefab: {fileID: 6196413060584088031, guid: fb0d8498cc8064b4bb4b80e8f3afb85b, type: 3}
   scrollContentTransform: {fileID: 1092157234}
-  placeableObject: {fileID: 11400000, guid: ceedd68c1d3326244a0dcf64b00f5763, type: 2}
+  placeableObjects: {fileID: 11400000, guid: dfc518c3c623e154bb0cf807f0256455, type: 2}
   yPadding: 10
 --- !u!1 &527362248
 GameObject:

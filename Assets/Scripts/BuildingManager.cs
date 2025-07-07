@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ScriptableObjectS;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -110,7 +111,7 @@ public class BuildingManager : MonoBehaviour
             return;
         }
 
-        activePlaceable = new PlaceableStruct() { placeableSO = placeable };
+        activeBuildable = placeable;
         inBuildMode = true;
     }
     
