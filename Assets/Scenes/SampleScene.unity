@@ -2096,6 +2096,7 @@ MonoBehaviour:
     m_Bits: 1
   inBuildMode: 0
   buildingGhost: {fileID: 1264246940}
+  ghostMaterial: {fileID: 2100000, guid: 33bcd70ba133f2c48bb2eed04f119123, type: 2}
   activeBuildable: {fileID: 11400000, guid: ceedd68c1d3326244a0dcf64b00f5763, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

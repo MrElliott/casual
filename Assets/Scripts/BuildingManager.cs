@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ScriptableObjectS;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -29,6 +30,8 @@ public class BuildingManager : MonoBehaviour
     public bool inBuildMode = false; 
     [FormerlySerializedAs("buildingGhostPrefab")] [SerializeField]
     private GameObject buildingGhost;
+    [SerializeField]
+    private Material ghostMaterial;
     [SerializeField]
     private PlaceableSO activeBuildable;
     
@@ -113,6 +116,7 @@ public class BuildingManager : MonoBehaviour
 
         activeBuildable = placeable;
         inBuildMode = true;
+        UpdateGhost();
     }
     
     private void UpdateGhostLocation()
@@ -144,7 +148,20 @@ public class BuildingManager : MonoBehaviour
             buildingGhost.transform.position = mousePosition;
         }
     }
-    
+
+    private void UpdateGhost()
+    {
+        foreach (Transform child in buildingGhost.transform)
+        {
+            Destroy(child.gameObject); // Destroy the child GameObject
+        }
+
+        Transform ghostTransform = Instantiate(activeBuildable.Prefab, buildingGhost.transform);
+        ghostTransform.GameObject().layer = LayerMask.NameToLayer("Ghost");
+        Renderer ghostRenderer = ghostTransform.GetComponent<Renderer>();
+        ghostRenderer.material = ghostMaterial;
+    }
+
 }
 
 public struct PlaceableStruct{
