@@ -28,7 +28,7 @@ public class BuildingManager : MonoBehaviour
     public LayerMask collisionLayer; // Set this to specify which layers the raycast should check for collisions
 
     public bool inBuildMode = false; 
-    [FormerlySerializedAs("buildingGhostPrefab")] [SerializeField]
+    [SerializeField]
     private GameObject buildingGhost;
     [SerializeField]
     private Material ghostMaterial;
@@ -77,6 +77,15 @@ public class BuildingManager : MonoBehaviour
                     // Perform your desired action with the clicked object
                     Debug.Log("Clicked on: " + clickedObject.name);
                 }
+            }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (inBuildMode)
+            {
+                inBuildMode = false;
+                buildingGhost.SetActive(false);
             }
         }
 
