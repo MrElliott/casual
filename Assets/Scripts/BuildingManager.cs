@@ -67,6 +67,7 @@ public class BuildingManager : MonoBehaviour
                 if (inBuildMode)
                 {
                     Transform t = Instantiate(activeBuildable.Prefab, hit.point, Quaternion.identity);
+                    t.rotation = CameraFacingRotation(t);
                     t.SetParent(clickedObject.transform);
                 }
                 else
@@ -167,10 +168,21 @@ public class BuildingManager : MonoBehaviour
 
         Transform ghostTransform = Instantiate(activeBuildable.Prefab, buildingGhost.transform);
         ghostTransform.GameObject().layer = LayerMask.NameToLayer("Ghost");
+        // Rotate towards Camera
+        
+        ghostTransform.rotation = CameraFacingRotation(ghostTransform);
+        
         Renderer ghostRenderer = ghostTransform.GetComponent<Renderer>();
         ghostRenderer.material = ghostMaterial;
     }
 
+    private quaternion CameraFacingRotation(Transform transform)
+    {
+        Vector3 direction = Camera.main.transform.position - transform.position;
+        direction.y = 0;
+        return Quaternion.LookRotation(direction);
+    }
+    
 }
 
 public struct PlaceableStruct{
