@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75f66d579abaeee4383616760c455e51, type: 3}
   m_Name: PlaceableHouseSO
   m_EditorClassIdentifier: 
-  DisplayName: HouseTest
+  DisplayName: House
   Prefab: {fileID: 4306050776583038, guid: a4a521900c27d504aa19df480329f342, type: 3}
   Type: 1
   Scalable: 1
