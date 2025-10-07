@@ -17,7 +17,7 @@ public class BuildingManager : MonoBehaviour
     private CinemachineOrbitController orbitController;
 
     [SerializeField]
-    private DefaultNamespace.ManipulationManager manipulationManager;
+    private ManipulationManager manipulationManager;
 
     private Camera _mainCamera;
 
