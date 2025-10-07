@@ -5,6 +5,9 @@ public class MoveGizmo : MonoBehaviour
     public float handleLength = 1.0f;
     public GameObject xHandlePrefab, yHandlePrefab, zHandlePrefab;
 
+    [SerializeField]
+    private LayerMask handleLayer = 0; // Layer to assign to handles
+
     private GameObject xHandle, yHandle, zHandle;
     private GameObject selectedHandle;
     private Camera cam;
@@ -54,6 +57,19 @@ public class MoveGizmo : MonoBehaviour
         }
 
         handle.tag = "Handle"; // Tag the handle for raycast detection
+
+        // Set the layer for the handle
+        if (handleLayer != 0)
+        {
+            int layer = (int)Mathf.Log(handleLayer.value, 2);
+            handle.layer = layer;
+
+            // Also set layer for all child objects
+            foreach (Transform child in handle.GetComponentsInChildren<Transform>(true))
+            {
+                child.gameObject.layer = layer;
+            }
+        }
     }
 
     private void UpdateGizmoPosition()

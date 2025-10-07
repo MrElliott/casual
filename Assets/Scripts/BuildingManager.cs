@@ -16,6 +16,9 @@ public class BuildingManager : MonoBehaviour
     [SerializeField]
     private CinemachineOrbitController orbitController;
 
+    [SerializeField]
+    private DefaultNamespace.ManipulationManager manipulationManager;
+
     private Camera _mainCamera;
 
     private PlaceableStruct basePlaceable;
@@ -23,8 +26,7 @@ public class BuildingManager : MonoBehaviour
     private List<PlaceableStruct> placeables = new List<PlaceableStruct>();
     
     private PlaceableStruct activePlaceable;
-
-
+    
     public LayerMask collisionLayer; // Set this to specify which layers the raycast should check for collisions
 
     public bool inBuildMode = false; 
@@ -63,7 +65,10 @@ public class BuildingManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, collisionLayer)){
                 // Get the GameObject that was hit
                 GameObject clickedObject = hit.collider.gameObject;
-
+                
+                if(clickedObject.CompareTag("Handle"))
+                    return;
+                
                 if (inBuildMode)
                 {
                     Transform t = Instantiate(activeBuildable.Prefab, hit.point, Quaternion.identity);
@@ -74,8 +79,7 @@ public class BuildingManager : MonoBehaviour
                 {
                     // Set the active placeable
                     SetActivePlaceable(clickedObject);
-                
-                    // Perform your desired action with the clicked object
+                    //Perform your desired action with the clicked object
                     Debug.Log("Clicked on: " + clickedObject.name);
                 }
             }
@@ -101,19 +105,25 @@ public class BuildingManager : MonoBehaviour
             }
         }
     }
-
+    
     private void SetActivePlaceable(GameObject go){
         if (go.transform.name == basePlaceable.transform.name){
             activePlaceable = basePlaceable;
         }
 
-        foreach (PlaceableStruct placeableStruct in placeables){
-            if (placeableStruct.transform.name == go.transform.name){
-                activePlaceable = placeableStruct;
-            }
-        }
+        //foreach (PlaceableStruct placeableStruct in placeables){
+        //    if (placeableStruct.transform.name == go.transform.name){
+        //        activePlaceable = placeableStruct;
+        //    }
+        //}
         
-        Debug.Log("Set Active Placeable: " + activePlaceable.transform.name);
+        //Debug.Log("Set Active Placeable: " + activePlaceable.transform.name);
+
+        // Pass the GameObject to ManipulationManager
+        if (manipulationManager != null)
+        {
+            manipulationManager.SetTarget(go);
+        }
     }
 
     public void SetPlaceable(PlaceableSO placeable)
