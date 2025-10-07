@@ -567,10 +567,10 @@ RectTransform:
   - {fileID: 1471069662}
   m_Father: {fileID: 1395239843}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 459.2333, y: 0.0016785}
-  m_SizeDelta: {x: 368.5334, y: 723.66}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -185, y: 0}
+  m_SizeDelta: {x: 370, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &527127385
 MonoBehaviour:
@@ -1013,7 +1013,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0.000006359719}
   m_SizeDelta: {x: 0, y: 706.66}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1092157235
@@ -1550,8 +1550,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 32197646}
   m_HandleRect: {fileID: 32197645}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.9931108
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2092,6 +2092,9 @@ MonoBehaviour:
   collisionLayer:
     serializedVersion: 2
     m_Bits: 1
+  handleLayer:
+    serializedVersion: 2
+    m_Bits: 0
   inBuildMode: 0
   buildingGhost: {fileID: 1264246940}
   ghostMaterial: {fileID: 2100000, guid: 33bcd70ba133f2c48bb2eed04f119123, type: 2}

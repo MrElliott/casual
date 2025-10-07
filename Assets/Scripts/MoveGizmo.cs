@@ -9,6 +9,14 @@ public class MoveGizmo : MonoBehaviour
     private LayerMask handleLayer = 0; // Layer to assign to handles
 
     [SerializeField]
+    private float handleOffsetFromBounds = 0.2f; // Additional offset from object bounds
+
+    [SerializeField]
+    private float minimumHandleDistance = 1.0f; // Minimum distance for handles from center
+
+    private float currentHandleDistance = 1.0f; // Current calculated handle distance
+
+    [SerializeField]
     private ManipulationType manipulationMode = ManipulationType.Move;
 
     [SerializeField]
@@ -41,6 +49,9 @@ public class MoveGizmo : MonoBehaviour
     {
         cam = Camera.main;
 
+        // Calculate appropriate handle distance based on object bounds
+        CalculateHandleDistance();
+
         // Instantiate handles
         xHandle = Instantiate(xHandlePrefab, transform.position, Quaternion.identity);
         yHandle = Instantiate(yHandlePrefab, transform.position, Quaternion.identity);
@@ -52,9 +63,9 @@ public class MoveGizmo : MonoBehaviour
         SetupHandle(zHandle, Vector3.forward, Color.blue);
 
         // Create line handles
-        xLine = CreateLineHandle(Vector3.right, handleLength, Color.red);
-        yLine = CreateLineHandle(Vector3.up, handleLength, Color.green);
-        zLine = CreateLineHandle(Vector3.forward, handleLength, Color.blue);
+        xLine = CreateLineHandle(Vector3.right, currentHandleDistance, Color.red);
+        yLine = CreateLineHandle(Vector3.up, currentHandleDistance, Color.green);
+        zLine = CreateLineHandle(Vector3.forward, currentHandleDistance, Color.blue);
 
         // Get all handle colliders (including line handles)
         handleColliders = new Collider[] { 
@@ -92,10 +103,87 @@ public class MoveGizmo : MonoBehaviour
         return manipulationMode;
     }
 
+    /// <summary>
+    /// Calculates the appropriate handle distance based on the object's bounds
+    /// </summary>
+    private void CalculateHandleDistance()
+    {
+        // Look for child objects (the actual target object is a child of this gizmo)
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        if (renderers.Length == 0)
+        {
+            currentHandleDistance = minimumHandleDistance;
+            return;
+        }
+
+        // Calculate combined bounds of all child renderers in world space
+        Bounds combinedBounds = new Bounds(transform.position, Vector3.zero);
+        bool boundsInitialized = false;
+
+        foreach (Renderer renderer in renderers)
+        {
+            // Skip if this renderer belongs to a handle
+            if (renderer.gameObject.name.Contains("Handle"))
+                continue;
+
+            if (!boundsInitialized)
+            {
+                combinedBounds = renderer.bounds;
+                boundsInitialized = true;
+            }
+            else
+            {
+                combinedBounds.Encapsulate(renderer.bounds);
+            }
+        }
+
+        if (boundsInitialized)
+        {
+            // Calculate the maximum distance from gizmo center to bounds edge
+            Vector3 gizmoCenter = transform.position;
+
+            // Get the 8 corners of the bounds
+            Vector3 min = combinedBounds.min;
+            Vector3 max = combinedBounds.max;
+
+            // Calculate distance from gizmo center to furthest corner in local space
+            float maxDistance = 0f;
+
+            // Check all 8 corners of the bounding box
+            Vector3[] corners = new Vector3[]
+            {
+                new Vector3(min.x, min.y, min.z),
+                new Vector3(min.x, min.y, max.z),
+                new Vector3(min.x, max.y, min.z),
+                new Vector3(min.x, max.y, max.z),
+                new Vector3(max.x, min.y, min.z),
+                new Vector3(max.x, min.y, max.z),
+                new Vector3(max.x, max.y, min.z),
+                new Vector3(max.x, max.y, max.z)
+            };
+
+            foreach (Vector3 corner in corners)
+            {
+                float distance = Vector3.Distance(gizmoCenter, corner);
+                maxDistance = Mathf.Max(maxDistance, distance);
+            }
+
+            currentHandleDistance = Mathf.Max(maxDistance + handleOffsetFromBounds, minimumHandleDistance);
+
+            Debug.Log($"Calculated handle distance: {currentHandleDistance} (max distance to corner: {maxDistance}, bounds size: {combinedBounds.size})");
+        }
+        else
+        {
+            currentHandleDistance = minimumHandleDistance;
+            Debug.Log($"No bounds found, using minimum handle distance: {minimumHandleDistance}");
+        }
+    }
+
     private void SetupHandle(GameObject handle, Vector3 direction, Color color)
     {
         handle.transform.SetParent(transform);
-        handle.transform.localPosition = direction * handleLength;
+        handle.transform.localPosition = direction * currentHandleDistance;
         handle.transform.localRotation = Quaternion.LookRotation(direction);
 
         Renderer renderer = handle.GetComponent<Renderer>();
