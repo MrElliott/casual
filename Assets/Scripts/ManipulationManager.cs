@@ -84,5 +84,23 @@ namespace DefaultNamespace
         {
             return targetObject;
         }
+
+        /// <summary>
+        /// Checks if the gizmo is currently handling input
+        /// </summary>
+        /// <returns>True if gizmo is actively being manipulated</returns>
+        public bool IsGizmoActive()
+        {
+            if (attachedManipulationObject == null)
+                return false;
+
+            MoveGizmo moveGizmo = attachedManipulationObject.GetComponent<MoveGizmo>();
+            if (moveGizmo != null)
+            {
+                return moveGizmo.IsHandlingInput;
+            }
+
+            return false;
+        }
     }
 }

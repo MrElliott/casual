@@ -19,6 +19,11 @@ public class MoveGizmo : MonoBehaviour
     
     private Collider[] handleColliders; // Store colliders to toggle during dragging
 
+    /// <summary>
+    /// Returns true if the gizmo is currently handling input (selected or dragging)
+    /// </summary>
+    public bool IsHandlingInput => selectedHandle != null;
+
     void Start()
     {
         cam = Camera.main;

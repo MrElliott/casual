@@ -29,6 +29,9 @@ public class BuildingManager : MonoBehaviour
     
     public LayerMask collisionLayer; // Set this to specify which layers the raycast should check for collisions
 
+    [SerializeField]
+    private LayerMask handleLayer; // Layer used by gizmo handles to exclude from selection
+
     public bool inBuildMode = false; 
     [SerializeField]
     private GameObject buildingGhost;
@@ -50,18 +53,24 @@ public class BuildingManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if(inBuildMode)
             UpdateGhostLocation();
         
         if (Input.GetMouseButtonDown(0)){
             
+            // Check if manipulation gizmo is currently active/being used
+            if (manipulationManager != null && manipulationManager.IsGizmoActive())
+            {
+                return; // Don't process building manager input while gizmo is active
+            }
+
             // Create a ray from the camera to the mouse position
             Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            // Perform a raycast and check if it hits a collider
+            // Perform a raycast and check if it hits a collider, excluding handle layer
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, collisionLayer)){
                 // Get the GameObject that was hit
                 GameObject clickedObject = hit.collider.gameObject;
@@ -91,6 +100,11 @@ public class BuildingManager : MonoBehaviour
             {
                 inBuildMode = false;
                 buildingGhost.SetActive(false);
+            }
+            
+            if (manipulationManager != null)
+            {
+                manipulationManager.ClearTarget();
             }
         }
 
